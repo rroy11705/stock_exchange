@@ -19,7 +19,7 @@ except Exception as e:
 def create_table():
     cur = con.cursor()
     cur.execute("""
-    CREATE TABLE IF NOT EXISTS core_live_stocks
+    CREATE TABLE IF NOT EXISTS core_livestocks
     (
         symbol VARCHAR PRIMARY KEY NOT NULL,
         name VARCHAR NOT NULL,
