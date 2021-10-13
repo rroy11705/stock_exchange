@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 
 
 class LiveStocks(models.Model):
-    symbol = models.CharField(primary_key=True, editable=False)
+    symbol = models.CharField(max_length=20, primary_key=True, editable=False)
     name = models.CharField(max_length=200, null=True, blank=True)
     price = models.CharField(max_length=200, null=True, blank=True)
     change = models.CharField(max_length=200, null=True, blank=True)
