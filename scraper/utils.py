@@ -12,7 +12,7 @@ try:
 except Exception as e:
     print("Error:", e)
 
-# symbol, name, price, change_percent, change_percent, prev_close_value,
+# symbol, name, price, change, change_percent, prev_close_value,
 # open_value, days_range, fifty_two_week_range,
 # volume, avg_volume, market_cap, dividend, prev_dividend_date
 
@@ -23,15 +23,15 @@ def create_table():
     (
         symbol VARCHAR PRIMARY KEY NOT NULL,
         name VARCHAR NOT NULL,
-        price VARCHAR NOT NULL,
-        change VARCHAR NOT NULL,
-        change_percent VARCHAR NOT NULL,
-        prev_close_value VARCHAR NULL,
-        open_value VARCHAR NULL,
+        price FLOAT NOT NULL,
+        change FLOAT NOT NULL,
+        change_percent FLOAT NOT NULL,
+        prev_close_value FLOAT NULL,
+        open_value FLOAT NULL,
         days_range VARCHAR NULL,
         fifty_two_week_range VARCHAR NULL,
-        volume VARCHAR NULL,
-        avg_volume VARCHAR NULL,
+        volume INT NULL,
+        avg_volume INT NULL,
         market_cap VARCHAR NULL,
         dividend VARCHAR NULL,
         prev_dividend_date VARCHAR NULL

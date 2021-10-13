@@ -11,6 +11,12 @@ from utils import replace_data
 
 headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'}
 
+def strToFloat(num):
+    num = re.sub(',', '', num)
+    if 'N/A' == num:
+        return None
+    return float(num)
+
 
 def saveData(stock):
 
@@ -20,17 +26,17 @@ def saveData(stock):
 
         soup = BeautifulSoup(r, 'html.parser')
 
-        price = soup.find('div', {'class': 'D(ib) Mend(20px)'}).find_all('span')[0].text
+        price = strToFloat(soup.find('div', {'class': 'D(ib) Mend(20px)'}).find_all('span')[0].text)
         change = soup.find('div', {'class': 'D(ib) Mend(20px)'}).find_all('span')[1].text
-        change_amount = (change.split(' ')[0])
-        change_percent = re.sub('[()]', '', change.split(' ')[1])
+        change_amount = strToFloat(change.split(' ')[0])
+        change_percent = strToFloat(re.sub('[(%)]', '', change.split(' ')[1]))
         data = soup.find_all('td', {'class': 'Ta(end) Fw(600) Lh(14px)'})
-        prev_close_value = data[0].text
-        open_value = data[1].text
+        prev_close_value = strToFloat(data[0].text)
+        open_value = strToFloat(data[1].text)
         days_range = data[4].text
         fifty_two_week_range = data[5].text
-        volume = data[6].text
-        avg_volume = data[7].text
+        volume = strToFloat(data[6].text)
+        avg_volume = strToFloat(data[7].text)
         market_cap = data[8].text
         dividend = data[13].text
         prev_dividend_date = data[14].text
@@ -78,8 +84,8 @@ def fetchData(offset, count):
 
 # multithreading     took 11s
 def main():
-    with ThreadPoolExecutor(max_workers=30) as executor:
-        executor.map(fetchData, [x*100 for x in range(0, 59)], [100] * 59)
+    with ThreadPoolExecutor(max_workers=50) as executor:
+        executor.map(fetchData, [x*25 for x in range(0, 240)], [100] * 240)
         executor.shutdown(wait=True)
 
 # synchronous     took 1min 34s
