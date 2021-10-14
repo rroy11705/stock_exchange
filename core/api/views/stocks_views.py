@@ -49,7 +49,8 @@ def getLiveStocks(request):
         page = 1
 
     page = int(page)
-    prev_params = next_params =  params
+    prev_params = dict(params)
+    next_params = dict(params)
     prev_params["page"] = page - 1
     next_params["page"] = page + 1
     print('Page:', page)
