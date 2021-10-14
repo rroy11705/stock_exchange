@@ -34,7 +34,7 @@ def getLiveStocks(request):
     serializer = LiveStocksSerializer(stocks, many=True)
 
     return Response({
-        'stocks': serializer.data,
         'page': page,
-        'pages': paginator.num_pages
+        'pages': paginator.num_pages,
+        'stocks': serializer.data,
     }, status=status.HTTP_200_OK)
