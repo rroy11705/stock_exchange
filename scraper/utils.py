@@ -3,11 +3,11 @@ import psycopg2
 
 try:
     con = psycopg2.connect(
-        host="ec2-34-203-91-150.compute-1.amazonaws.com",
-        database="d33iakhgr3burt",
-        user="yzwpvnpxqsdpqa",
+        host="ec2-107-22-18-26.compute-1.amazonaws.com",
+        database="da89d95rl8ohhe",
+        user="mvtvvtlxluxctw",
         port="5432",
-        password="08e2b09acc992e591c8de525390e61b2e1c256d971b191bc9b0803eb112422d7")
+        password="583116a4434894171d37c418dd73ac9b328a1b8adda853fd9f2a309464f6e7df")
 
 except Exception as e:
     print("Error:", e)
@@ -48,7 +48,7 @@ def replace_data(*args):
     cur = con.cursor()
     cur.execute("""
     INSERT INTO
-    core_live_stocks (symbol, name, price, change, change_percent, prev_close_value, open_value, days_range, fifty_two_week_range, volume, avg_volume, market_cap, dividend, prev_dividend_date)
+    core_livestocks (symbol, name, price, change, change_percent, prev_close_value, open_value, days_range, fifty_two_week_range, volume, avg_volume, market_cap, dividend, prev_dividend_date)
     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
     ON CONFLICT (symbol) DO
     UPDATE SET 
