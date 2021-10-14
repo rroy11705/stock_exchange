@@ -121,7 +121,6 @@ def main():
 
 if __name__ == '__main__':
     start = timer()
-    # main()
-    saveData(('Indoco Remedies Limited', 'INDOCO.BO'))
+    main()
     end = timer()
     print(timedelta(seconds=end-start))
