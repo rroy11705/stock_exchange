@@ -44,15 +44,27 @@ def create_table():
     print("Table Live Stocks created!")
 
 
+def del_table():
+    cur = con.cursor()
+    cur.execute("""
+    DROP TABLE core_livestocks;
+    """)
+
+    cur.close()
+
+    con.commit()
+    print("Table Live Stocks deleted!")
+
+
 def replace_data(*args):
     cur = con.cursor()
     cur.execute("""
     INSERT INTO
-    core_livestocks (symbol, name, price, change, change_percent, prev_close_value, open_value, days_range, fifty_two_week_range, volume, avg_volume, market_cap, dividend, prev_dividend_date)
-    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+    core_livestocks (symbol, name, price, change_amount, change_percent, prev_close_value, open_value, bid_value, bid_quantity, ask_value, ask_quantity, days_high, days_low, fifty_two_week_high, fifty_two_week_low, volume, avg_volume, market_cap, market_cap_prefix, beta, pe_ratio, eps_ratio, forward_dividend_yield, forward_dividend_percentage, prev_dividend_date, one_year_target)
+    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
     ON CONFLICT (symbol) DO
     UPDATE SET 
-    name = %s, price = %s, change = %s, change_percent = %s, prev_close_value = %s, open_value = %s, days_range = %s, fifty_two_week_range = %s, volume = %s, avg_volume = %s, market_cap = %s, dividend = %s, prev_dividend_date = %s;
+    name = %s, price = %s, change = %s, change_percent = %s, prev_close_value = %s, open_value = %s, bid_value = %s, bid_quantity = %s, ask_value = %s, ask_quantity = %s, days_high = %s, days_low = %s, fifty_two_week_high = %s, fifty_two_week_low = %s, volume = %s, avg_volume = %s, market_cap = %s, market_cap_prefix = %s, beta = %s, pe_ratio = %s, eps_ratio = %s, forward_dividend_yield = %s, forward_dividend_percentage = %s, prev_dividend_date = %s, one_year_target = %s;
     """, (args + args[1:]))
 
     con.commit()
@@ -60,4 +72,4 @@ def replace_data(*args):
 
 
 if __name__ == "__main__":
-    create_table()
+    del_table()

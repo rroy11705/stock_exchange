@@ -26,41 +26,54 @@ def build_url(*args, **kwargs):
 
 @api_view(["GET"])
 def getLiveStocks(request):
-    query = request.query_params.get("keyword")
-    params = {
-        'keyword': query
-    }
-    if query == None:
-        query = ''
-        params = {}
-
-    stocks = LiveStocks.objects.filter(Q(name__icontains=query) | Q(symbol__icontains=query)).order_by('-pk')
-    
-    page = request.query_params.get("page")
-    paginator = Paginator(stocks, 25)
 
     try:
-        stocks = paginator.page(page)
+        query = request.query_params.get("keyword")
 
-    except PageNotAnInteger:
-        stocks = paginator.page(paginator.num_pages)
+        params = {
+            'keyword': query
+        }
 
-    if page == None:
-        page = 1
+        if query == None:
+            query = ''
+            params = {}
 
-    page = int(page)
-    prev_params = dict(params)
-    next_params = dict(params)
-    prev_params["page"] = page - 1
-    next_params["page"] = page + 1
-    print('Page:', page)
-    serializer = LiveStocksSerializer(stocks, many=True)
+        stocks = LiveStocks.objects.filter(Q(name__icontains=query) | Q(symbol__icontains=query)).order_by('pk')
+
+        total = len(stocks)
+        
+        page = request.query_params.get("page")
+        paginator = Paginator(stocks, 25)
+
+        if page == None:
+            page = 1
+
+        try:
+            stocks = paginator.page(page)
+
+        except PageNotAnInteger:
+            stocks = paginator.page(paginator.num_pages)
+            print(stocks)
+
+        page = int(page)
+        prev_params = dict(params)
+        next_params = dict(params)
+        prev_params["page"] = page - 1
+        next_params["page"] = page + 1
+
+        serializer = LiveStocksSerializer(stocks, many=True)
 
 
-    return Response({
-        'page': page,
-        "prev": None if page == 1 else build_url('live-stocks', params=prev_params),
-        "next": None if page == paginator.num_pages else build_url('live-stocks', params=next_params),
-        'pages': paginator.num_pages,
-        'stocks': serializer.data,
-    }, status=status.HTTP_200_OK)
+        return Response({
+            "total": total,
+            "page": page,
+            "prev": None if page == 1 else build_url('live-stocks', params=prev_params),
+            "next": None if page == paginator.num_pages else build_url('live-stocks', params=next_params),
+            "pages": paginator.num_pages,
+            "stocks": serializer.data,
+        }, status=status.HTTP_200_OK)
+
+    except:
+        return Response({
+            "stocks": [],
+        }, status=status.HTTP_404_NOT_FOUND)
