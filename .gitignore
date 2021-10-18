@@ -53,4 +53,4 @@ docs/_build/
 .env
 
 # virtual env
-myse/
+venv/
