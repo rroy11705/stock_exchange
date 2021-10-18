@@ -6,6 +6,7 @@ from django.core.paginator import Paginator, PageNotAnInteger
 from django.db.models import Q
 from core.models import LiveStocks
 from core.api.serializers import LiveStocksSerializer
+from django.db.models import F
 from django.urls import reverse
 from django.http import QueryDict
 
@@ -77,3 +78,11 @@ def getLiveStocks(request):
         return Response({
             "stocks": [],
         }, status=status.HTTP_404_NOT_FOUND)
+
+
+
+@api_view(['GET'])
+def getTopGainers(request):
+    stocks = LiveStocks.objects.filter(prev_close_value__gt=0).annotate(ordering=F('change_amount') / F('prev_close_value')).order_by('-ordering')[0:100]
+    serializer = LiveStocksSerializer(stocks, many=True)
+    return Response(serializer.data)
