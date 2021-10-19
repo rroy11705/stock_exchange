@@ -6,12 +6,14 @@ import Loader from '../components/Loader'
 import Message from '../components/Message'
 import { listStockDetails } from '../actions/stocksAction'
 
-export default function StockDetailsScreen({ match }) {
+export default function StockDetailsScreen({ location, match }) {
 
     const dispatch = useDispatch()
 
     const stockDetailsList = useSelector(state => state.stockDetailsList)
     const { loading, error, stock } = stockDetailsList
+
+    const prev = location.search ? location.search.split('?prev=')[1] : '/'
 
     useEffect(() => {
         dispatch(listStockDetails(match.params.id))
@@ -20,7 +22,7 @@ export default function StockDetailsScreen({ match }) {
 
     return (
         <div>
-            <Link to='/' className='btn btn-light my-3'>Go Back</Link>
+            <Link to={prev} className='btn btn-light my-3'>Go Back</Link>
             {loading ?
                 <Loader />
                 : error

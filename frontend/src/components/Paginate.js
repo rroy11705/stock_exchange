@@ -18,13 +18,13 @@ function Paginate({ pages, page, link = '', keywords, extra }) {
                     <>
                         <LinkContainer
                             key="first"
-                            to={`/${link}/?page=${1}`}
+                            to={`/${link}/?${keywords}&page=${1}`}
                         >
                             <Pagination.Item>First</Pagination.Item>
                         </LinkContainer>
                         <LinkContainer
                             key="prev"
-                            to={`/${link}/?page=${page - 1}`}
+                            to={`/${link}/?${keywords}&page=${page - 1}`}
                         >
                             <Pagination.Item>Prev</Pagination.Item>
                         </LinkContainer>
@@ -39,7 +39,7 @@ function Paginate({ pages, page, link = '', keywords, extra }) {
                 .map((x) => (
                 <LinkContainer
                     key={x + 1}
-                    to={`/${link}/?page=${x + 1}`}
+                    to={`/${link}/?${keywords}&page=${x + 1}`}
                 >
                     <Pagination.Item active={x + 1 === page}>{x + 1}</Pagination.Item>
                 </LinkContainer>
@@ -47,14 +47,14 @@ function Paginate({ pages, page, link = '', keywords, extra }) {
 
             <LinkContainer
                 key="next"
-                to={`/${link}/?page=${page + 1}`}
+                to={`/${link}/?${keywords}&page=${page + 1}`}
             >
                 <Pagination.Item>Next</Pagination.Item>
             </LinkContainer>
 
             <LinkContainer
                 key="last"
-                to={`/${link}/?page=${pages}`}
+                to={`/${link}/?${keywords}&page=${pages}`}
             >
                 <Pagination.Item>Last</Pagination.Item>
             </LinkContainer>
