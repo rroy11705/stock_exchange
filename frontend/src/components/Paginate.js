@@ -2,9 +2,10 @@ import React from 'react'
 import { Pagination } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 
-function Paginate({ pages, page, keyword = '', extra }) {
-    if (keyword) {
-        keyword = keyword.split('?keyword=')[1].split('&')[0]
+function Paginate({ pages, page, link = '', keywords, extra }) {
+
+    if (keywords) {
+        keywords = keywords.split('?')[1].split('&')[0]
     }
 
     const page_lower_index = Math.max((page - 1) - (extra / 2), 0)
@@ -16,14 +17,14 @@ function Paginate({ pages, page, keyword = '', extra }) {
             {page > 1 && (
                     <>
                         <LinkContainer
-                            key="prev"
-                            to={`/?keyword=${keyword}&page=${1}`}
+                            key="first"
+                            to={`/${link}/?page=${1}`}
                         >
                             <Pagination.Item>First</Pagination.Item>
                         </LinkContainer>
                         <LinkContainer
                             key="prev"
-                            to={`/?keyword=${keyword}&page=${page - 1}`}
+                            to={`/${link}/?page=${page - 1}`}
                         >
                             <Pagination.Item>Prev</Pagination.Item>
                         </LinkContainer>
@@ -38,22 +39,22 @@ function Paginate({ pages, page, keyword = '', extra }) {
                 .map((x) => (
                 <LinkContainer
                     key={x + 1}
-                    to={`/?keyword=${keyword}&page=${x + 1}`}
+                    to={`/${link}/?page=${x + 1}`}
                 >
                     <Pagination.Item active={x + 1 === page}>{x + 1}</Pagination.Item>
                 </LinkContainer>
             ))}
 
             <LinkContainer
-                key="prev"
-                to={`/?keyword=${keyword}&page=${page + 1}`}
+                key="next"
+                to={`/${link}/?page=${page + 1}`}
             >
                 <Pagination.Item>Next</Pagination.Item>
             </LinkContainer>
 
             <LinkContainer
-                key="prev"
-                to={`/?keyword=${keyword}&page=${pages}`}
+                key="last"
+                to={`/${link}/?page=${pages}`}
             >
                 <Pagination.Item>Last</Pagination.Item>
             </LinkContainer>

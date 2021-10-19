@@ -23,3 +23,7 @@ class LiveStocks(models.Model):
     pe_ratio = models.FloatField(max_length=50, null=True, blank=True)
     eps_ratio = models.FloatField(max_length=50, null=True, blank=True)
     forward_dividend_yield = models.FloatField(max_length=50, null=True, blank=True)
+
+
+class Watchlist(models.Model):
+    pass

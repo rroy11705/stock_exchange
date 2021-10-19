@@ -2,42 +2,50 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Row, Col } from 'react-bootstrap'
 import Loader from '../components/Loader'
-import Paginate from '../components/Paginate'
 import Message from '../components/Message'
-import { listStocks } from '../actions/stocksAction'
-import { useHistory } from 'react-router-dom'
+import HomeStockList from '../components/HomeStockList'
+import { listStocksTopLosers, listStocksTopGainers } from '../actions/stocksAction'
 
 export default function HomeScreen() {
 
     const dispatch = useDispatch()
-    const stocksList = useSelector(state => state.stocksList)
-    const { error, loading, stocks, page, pages } = stocksList
+    const stocksTopLosersList = useSelector(state => state.stocksTopLosersList)
 
-    let history = useHistory()
-
-    let keyword = history.location.search
+    const stocksTopGainersList = useSelector(state => state.stocksTopGainersList)
 
     useEffect(() => {
-        dispatch(listStocks(keyword))
+        dispatch(listStocksTopGainers())
+        dispatch(listStocksTopLosers())
 
-    }, [dispatch, keyword])
+    }, [dispatch])
 
     return (
-        <div>
-            {loading ? <Loader />
-                : error ? <Message variant='danger'>{error}</Message>
+        <>
+            <Row>
+                {(stocksTopLosersList.loading && stocksTopGainersList.loading) ? <Loader /> 
                     :
-                    <div>
-                        <Row>
-                            {stocks.map(stock => (
-                                <Col key={stock.symbol} sm={12} md={6} lg={4} xl={3}>
-                                    {stock.name}
-                                </Col>
-                            ))}
-                        </Row>
-                        <Paginate page={page} pages={pages} keyword={keyword} extra={6} />
-                    </div>
-            }
-        </div>
+                    (
+                        <>
+                            <Col sm={12} md={6}>
+                                {stocksTopGainersList.error ? <Message variant='danger'>{stocksTopGainersList.error}</Message>
+                                        :
+                                        <div className="py-5">
+                                            <HomeStockList title="Stocks: Gainers" seeMoreLink="top-gainers"ink="top-gainers" stocks={stocksTopGainersList.stocks.stocks?.slice(0, 5)} />
+                                        </div>
+                                }
+                            </Col>
+                            <Col sm={12} md={6}>
+                                {stocksTopLosersList.error ? <Message variant='danger'>{stocksTopLosersList.error}</Message>
+                                    :
+                                    <div className="py-5">
+                                        <HomeStockList title="Stocks: Losers" seeMoreLink="top-losers" stocks={stocksTopLosersList.stocks.stocks?.slice(0, 5)} />
+                                    </div>
+                                }
+                            </Col>
+                        </>
+                    )
+                }
+            </Row>
+        </>
     )
 }

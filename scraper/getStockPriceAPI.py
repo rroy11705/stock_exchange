@@ -27,7 +27,7 @@ success_count = 0
 fail_count = 0
 
 
-# @retry(stop=stop_after_attempt(3))
+@retry(stop=stop_after_attempt(3))
 def saveData(stock):
 
     try:
@@ -63,7 +63,7 @@ def saveData(stock):
         fail_count += 1
 
 
-# @retry(stop=stop_after_attempt(3))
+@retry(stop=stop_after_attempt(3))
 def getMostActiveSocks(offset, count):
 
     url = f'https://query1.finance.yahoo.com/v1/finance/screener/public/saved?start={offset}&count={count}&scrId=3f29f493-e529-4abd-852c-5a773fb8a7a4'
