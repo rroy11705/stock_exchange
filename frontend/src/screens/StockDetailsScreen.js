@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { Row, Col, ListGroup } from 'react-bootstrap'
+import { Row, Col, Button, ListGroup } from 'react-bootstrap'
+import { FaRegStar } from "react-icons/fa"
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 import { listStockDetails } from '../actions/stocksAction'
@@ -30,8 +31,13 @@ export default function StockDetailsScreen({ location, match }) {
                     : (
                         <div>
                             <Row>
-                                <Col>
+                                <Col sm={12} md={10}>
                                     <h4>{stock.name} ({ stock.symbol })</h4>
+                                </Col>
+                                <Col sm={12} md={2}>
+                                    <Button variant="outline-info" size="sm" className="d-flex align-items-center">
+                                        <FaRegStar size="1rem" className="mr-2" />  Add To Portfolio
+                                    </Button>
                                 </Col>
                             </Row>
                             <Row>

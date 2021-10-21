@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -7,22 +6,6 @@ from django.db.models import Q
 from core.models import LiveStocks
 from core.api.serializers import LiveStocksSerializer
 from django.db.models import F
-from django.urls import reverse
-from django.http import QueryDict
-
-
-def build_url(*args, **kwargs):
-    params = kwargs.pop('params', {})
-    url = reverse(*args, **kwargs)
-    if not params: return url
-
-    qdict = QueryDict('', mutable=True)
-    for k, v in params.items():
-        if type(v) is list: qdict.setlist(k, v)
-        else: qdict[k] = v
-
-    return url + '?' + qdict.urlencode()
-
 
 
 @api_view(["GET"])

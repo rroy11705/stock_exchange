@@ -4,7 +4,7 @@ import { Row, Col } from 'react-bootstrap'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 import Paginate from '../components/Paginate'
-import HomeStockList from '../components/HomeStockList'
+import StockList from '../components/StockList'
 import { listStocks } from '../actions/stocksAction'
 
 
@@ -30,7 +30,7 @@ export default function SearchScreen({ history }) {
                         <Row>
                             <Col>
                                 <div className="py-5">
-                                    <HomeStockList title={`Stocks Search: ${searchKey}`} stocks={stocks} />
+                                    <StockList title={`Stocks Search: ${searchKey}`} showAddToPortfolioButton={true} stocks={stocks} />
                                 </div>
                             </Col>
                         </Row>

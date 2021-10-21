@@ -24,6 +24,27 @@ class LiveStocks(models.Model):
     eps_ratio = models.FloatField(max_length=50, null=True, blank=True)
     forward_dividend_yield = models.FloatField(max_length=50, null=True, blank=True)
 
+    def __str__(self):
+        return f"{self.name} ({self.symbol})"
 
-class Watchlist(models.Model):
-    pass
+
+class Portfolio(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    name = models.CharField(max_length=500, null=True, blank=True)
+    createdAt = models.DateTimeField(auto_now_add=True)
+    updatedAt = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.name} ({self.user})"
+
+
+class PortfolioRecords(models.Model):
+    portfolio = models.ForeignKey(Portfolio, on_delete=models.SET_NULL, null=True, blank=True)
+    symbol = models.ForeignKey(LiveStocks, on_delete=models.SET_NULL, null=True, blank=True)
+    trade_date = models.DateField(auto_now_add=True)
+    shares = models.FloatField(max_length=50, null=True, blank=True)
+    cost_per_share = models.FloatField(max_length=50, null=True, blank=True)
+    notes = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.symbol} - {self.portfolio}"

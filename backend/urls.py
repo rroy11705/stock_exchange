@@ -25,6 +25,7 @@ urlpatterns = [
     path('', TemplateView.as_view(template_name='index.html')),
     path('api/stocks/', include('core.api.urls.stocks_urls')),
     path('api/users/', include('core.api.urls.user_urls')),
+    path('api/portfolio/', include('core.api.urls.portfolio_urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -29,7 +29,7 @@ export default function Header() {
                         <SearchBox />
                         <Nav className="ml-auto">
 
-                            <LinkContainer to='/portfolio'>
+                            <LinkContainer to='/portfolios'>
                                 <Nav.Link >My Portfolio</Nav.Link>
                             </LinkContainer>
 

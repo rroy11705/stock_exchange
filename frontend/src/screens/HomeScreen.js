@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Row, Col } from 'react-bootstrap'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
-import HomeStockList from '../components/HomeStockList'
+import StockList from '../components/StockList'
 import { listStocksTopLosers, listStocksTopGainers } from '../actions/stocksAction'
 
 export default function HomeScreen() {
@@ -30,7 +30,7 @@ export default function HomeScreen() {
                                 {stocksTopGainersList.error ? <Message variant='danger'>{stocksTopGainersList.error}</Message>
                                         :
                                         <div className="py-5">
-                                            <HomeStockList title="Stocks: Gainers" seeMoreLink="top-gainers"ink="top-gainers" stocks={stocksTopGainersList.stocks.stocks?.slice(0, 5)} />
+                                            <StockList title="Stocks: Gainers" seeMoreLink="top-gainers"ink="top-gainers" stocks={stocksTopGainersList.stocks.stocks?.slice(0, 5)} />
                                         </div>
                                 }
                             </Col>
@@ -38,7 +38,7 @@ export default function HomeScreen() {
                                 {stocksTopLosersList.error ? <Message variant='danger'>{stocksTopLosersList.error}</Message>
                                     :
                                     <div className="py-5">
-                                        <HomeStockList title="Stocks: Losers" seeMoreLink="top-losers" stocks={stocksTopLosersList.stocks.stocks?.slice(0, 5)} />
+                                        <StockList title="Stocks: Losers" seeMoreLink="top-losers" stocks={stocksTopLosersList.stocks.stocks?.slice(0, 5)} />
                                     </div>
                                 }
                             </Col>

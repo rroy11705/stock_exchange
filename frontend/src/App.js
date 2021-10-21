@@ -9,6 +9,8 @@ import TopLosersScreen from './screens/TopLosersScreen'
 import LogInScreen from './screens/LogInScreen'
 import RegisterScreen from './screens/RegisterScreen'
 import ProfileScreen from './screens/ProfileScreen'
+import PortfolioScreen from './screens/PortfolioScreen'
+import PortfolioDetailsScreen from './screens/PortfolioDetailsScreen'
 
 
 function App() {
@@ -25,6 +27,8 @@ function App() {
           <Route path='/login' component={LogInScreen} />
           <Route path='/register' component={RegisterScreen} />
           <Route path='/profile' component={ProfileScreen} />
+          <Route path='/portfolios' component={PortfolioScreen} />
+          <Route path='/portfolio/:id' component={PortfolioDetailsScreen} />
         </Container>
       </div>
     </Router>

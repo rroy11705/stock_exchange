@@ -4,7 +4,7 @@ import { Row, Col } from 'react-bootstrap'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 import Paginate from '../components/Paginate'
-import HomeStockList from '../components/HomeStockList'
+import StockList from '../components/StockList'
 import { listStocksTopGainers } from '../actions/stocksAction'
 import { useHistory } from 'react-router-dom'
 
@@ -30,7 +30,7 @@ export default function TopGainersScreen() {
                         : stocksTopGainersList.error ? <Message variant='danger'>{stocksTopGainersList.error}</Message>
                             :
                             <div className="py-5">
-                                <HomeStockList title={`Stocks: Gainers (Top ${stocksTopGainersList.stocks.total})`} stocks={stocksTopGainersList.stocks.stocks} />
+                                <StockList title={`Stocks: Gainers (Top ${stocksTopGainersList.stocks.total})`} showAddToPortfolioButton={true} stocks={stocksTopGainersList.stocks.stocks} />
                                 <Paginate page={stocksTopGainersList.stocks.page} pages={stocksTopGainersList.stocks.pages} link="top-gainers" keywords={keyword} extra={2} />
                             </div>
                     }

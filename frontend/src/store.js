@@ -17,6 +17,11 @@ import {
     userUpdateProfileReducer 
 } from './reducers/userReducers'
 
+import {
+    portfolioReducer,
+    portfolioDetailsReducer
+} from './reducers/portfolioReducers'
+
 
 const reducer = combineReducers({
     stocksList: stocksListReducer,
@@ -28,6 +33,9 @@ const reducer = combineReducers({
     userRegister: userRegisterReducer,
     userDetails: userDetailsReducer,
     userUpdateProfile: userUpdateProfileReducer,
+
+    portfolioList: portfolioReducer,
+    portfolioDetails: portfolioDetailsReducer
 })
 
 const userInfoFromStorage = localStorage.getItem('userInfo') ?
