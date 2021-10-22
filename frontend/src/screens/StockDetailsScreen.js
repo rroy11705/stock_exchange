@@ -1,25 +1,51 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { Row, Col, Button, ListGroup } from 'react-bootstrap'
 import { FaRegStar } from "react-icons/fa"
 import Loader from '../components/Loader'
 import Message from '../components/Message'
+import ModalForm from '../components/ModalForm'
 import { listStockDetails } from '../actions/stocksAction'
+import { getPortfolio, createPortfolioRecord } from '../actions/portfolioAction'
 
 export default function StockDetailsScreen({ location, match }) {
+
+    let history = useHistory()
+
+    const [addModalShow, setAddModalShow] = useState(false)
 
     const dispatch = useDispatch()
 
     const stockDetailsList = useSelector(state => state.stockDetailsList)
-    const { loading, error, stock } = stockDetailsList
+    const { error, stock } = stockDetailsList
+
+    const portfolioList = useSelector(state => state.portfolioList)
+    const { loading, portfolios } = portfolioList
+
+    const userLogin = useSelector(state => state.userLogin)
+    const { userInfo } = userLogin
 
     const prev = location.search ? location.search.split('?prev=')[1] : '/'
 
     useEffect(() => {
+        dispatch(getPortfolio())
         dispatch(listStockDetails(match.params.id))
-
     }, [dispatch, match])
+
+    const handelAddRecordInPortfolio = (e) => {
+        const id = e.currentTarget.value
+        let record = {
+            symbol: stock.symbol,
+            trade_date: new Date(),
+            shares: 0,
+            cost_per_share: 0,
+            notes: ''
+        }
+        dispatch(createPortfolioRecord({ id: id, record: record }))
+        history.push(`/portfolio/${id}/`)
+    }
 
     return (
         <div>
@@ -34,11 +60,44 @@ export default function StockDetailsScreen({ location, match }) {
                                 <Col sm={12} md={10}>
                                     <h4>{stock.name} ({ stock.symbol })</h4>
                                 </Col>
-                                <Col sm={12} md={2}>
-                                    <Button variant="outline-info" size="sm" className="d-flex align-items-center">
-                                        <FaRegStar size="1rem" className="mr-2" />  Add To Portfolio
-                                    </Button>
-                                </Col>
+                                {userInfo && 
+                                    <Col sm={12} md={2}>
+                                        <ModalForm
+                                            show={addModalShow}
+                                            size="sm"
+                                            title="Choose Portfolio to add the stocks"
+                                            body={
+                                                (
+                                                    <>
+                                                        <div className="d-grid gap-2">
+                                                            {portfolios.map(portfolio => (
+                                                                <div key={portfolio.id}>
+                                                                    <Button
+                                                                        variant="link"
+                                                                        value={portfolio.id}
+                                                                        style={{ cursor: "pointer" }}
+                                                                        onClick={handelAddRecordInPortfolio}>
+                                                                        {portfolio.name}
+                                                                    </Button>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                        <Button className="mt-3 float-right" onClick={() => setAddModalShow(false)} variant="secondary">
+                                                            Close
+                                                        </Button>
+                                                    </>
+                                                )
+                                            }
+                                        />
+                                        <Button
+                                            variant="outline-info" 
+                                            size="sm" 
+                                            className="d-flex align-items-center"
+                                            onClick={() => setAddModalShow(true)}>
+                                            <FaRegStar size="1rem" className="mr-2" />  Add To Portfolio
+                                        </Button>
+                                    </Col>
+                                }
                             </Row>
                             <Row>
                                 <Col>

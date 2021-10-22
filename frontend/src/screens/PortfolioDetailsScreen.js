@@ -75,7 +75,6 @@ export default function PortfolioDetailsScreen({ location, history, match }) {
             cost_per_share: costPerShares,
             notes: notes
         }
-        console.log({ id: selectedRecord, record: record })
         dispatch(updatePortfolioRecord({ id: selectedRecord, record: record }))
         setUpdateModalShow(false)
         setSymbol('')
