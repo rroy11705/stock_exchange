@@ -29,11 +29,12 @@ export default function LogInScreen({ location, history }) {
         dispatch(login(email, password))
     }
 
+    if (loading) 
+        return <Loader />
     return (
         <FormContainer>
             <h1>Sign In</h1>
             {error && <Message variant='danger'>{error}</Message>}
-            {loading && <Loader />}
             <Form onSubmit={submitHandler}>
 
                 <Form.Group controlId='email'>

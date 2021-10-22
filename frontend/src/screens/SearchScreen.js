@@ -21,21 +21,22 @@ export default function SearchScreen({ history }) {
 
     }, [dispatch, keyword])
 
+    if (loading)
+        return <Loader />
     return (
         <div>
-            {loading ? <Loader />
-                : error ? <Message variant='danger'>{error}</Message>
-                    :
-                    <div>
-                        <Row>
-                            <Col>
-                                <div className="py-5">
-                                    <StockList title={`Stocks Search: ${searchKey}`} showAddToPortfolioButton={true} stocks={stocks} />
-                                </div>
-                            </Col>
-                        </Row>
-                        <Paginate page={page} pages={pages} keywords={keyword} link="search" extra={2} />
-                    </div>
+            {error ? <Message variant='danger'>{error}</Message>
+                :
+                <div>
+                    <Row>
+                        <Col>
+                            <div className="py-5">
+                                <StockList title={`Stocks Search: ${searchKey}`} showAddToPortfolioButton={true} stocks={stocks} />
+                            </div>
+                        </Col>
+                    </Row>
+                    <Paginate page={page} pages={pages} keywords={keyword} link="search" extra={2} />
+                </div>
             }
         </div>
     )

@@ -24,6 +24,10 @@ import {
     PORTFOLIO_RECORD_DELETE_SUCCESS,
     PORTFOLIO_RECORD_DELETE_FAIL,
 
+    PORTFOLIO_DETAILS_UPDATE_REQUEST,
+    PORTFOLIO_DETAILS_UPDATE_SUCCESS,
+    PORTFOLIO_DETAILS_UPDATE_FAIL,
+
     PORTFOLIO_RECORD_UPDATE_REQUEST,
     PORTFOLIO_RECORD_UPDATE_SUCCESS,
     PORTFOLIO_RECORD_UPDATE_FAIL
@@ -262,3 +266,81 @@ export const deletePortfolioRecord = (id) => async (dispatch, getState) => {
         })
     }
 }
+
+
+export const updatePortfolioDetails = ({ id, portfolio }) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: PORTFOLIO_DETAILS_UPDATE_REQUEST
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.put(
+            `/api/portfolio/${id}/`,
+            portfolio,
+            config
+        )
+
+        dispatch({
+            type: PORTFOLIO_DETAILS_UPDATE_SUCCESS,
+            payload: data
+        })
+
+    } catch (error) {
+        dispatch({
+            type: PORTFOLIO_DETAILS_UPDATE_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+export const updatePortfolioRecord = ({ id, record }) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: PORTFOLIO_RECORD_UPDATE_REQUEST
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.put(
+            `/api/portfolio/record/${id}/`,
+            record,
+            config
+        )
+
+        dispatch({
+            type: PORTFOLIO_RECORD_UPDATE_SUCCESS,
+            payload: data
+        })
+
+    } catch (error) {
+        dispatch({
+            type: PORTFOLIO_RECORD_UPDATE_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+

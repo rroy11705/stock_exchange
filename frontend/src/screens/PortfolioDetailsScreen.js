@@ -8,25 +8,33 @@ import Loader from '../components/Loader'
 import ColoredCodecNumber from '../components/ColoredCodecNumber'
 import Message from '../components/Message'
 import ModalForm from '../components/ModalForm'
-import { getPortfolioDetails, createPortfolioRecord, deletePortfolioRecord } from '../actions/portfolioAction'
+import { getPortfolioDetails, createPortfolioRecord, updatePortfolioRecord, deletePortfolioRecord } from '../actions/portfolioAction'
 import { listStocks } from '../actions/stocksAction'
 
 export default function PortfolioDetailsScreen({ location, history, match }) {
 
-    const [modalShow, setModalShow] = useState(false)
+    const [createModalShow, setCreateModalShow] = useState(false)
+    const [updateModalShow, setUpdateModalShow] = useState(false)
+    
     const symbolInputRef = useRef()
     const symbolSelectRef = useRef()
     const [searchStocks, setSearchStocks] = useState([])
+
+    const [selectedRecord, setSelectedRecord] = useState("")
+
     const [symbol, setSymbol] = useState('')
     const [tradeDate, setTradeDate] = useState(new Date())
     const today = new Date()
-    const [shares, setShares] = useState('')
-    const [costPerShares, setCostPerShares] = useState('')
+    const [shares, setShares] = useState(0)
+    const [costPerShares, setCostPerShares] = useState(0)
     const [notes, setNotes] = useState('')
 
     const dispatch = useDispatch()
     const portfolioDetails = useSelector(state => state.portfolioDetails)
     const { error, loading, portfolio } = portfolioDetails
+
+    const userLogin = useSelector(state => state.userLogin)
+    const { userInfo } = userLogin
 
     const stocksList = useSelector(state => state.stocksList)
 
@@ -34,8 +42,11 @@ export default function PortfolioDetailsScreen({ location, history, match }) {
     const path = history.location.search ? history.location.pathname + history.location.search : history.location.pathname
 
     useEffect(() => {
+        if (!userInfo)
+            history.push('/login')
+
         dispatch(getPortfolioDetails(match.params.id))
-    }, [match])
+    }, [userInfo, match])
 
     const handelCreateRecordSubmit = (e) => {
         e.preventDefault()
@@ -47,7 +58,26 @@ export default function PortfolioDetailsScreen({ location, history, match }) {
             notes: notes
         }
         dispatch(createPortfolioRecord({id: match.params.id, record: record}))
-        setModalShow(false)
+        setCreateModalShow(false)
+        setSymbol('')
+        setTradeDate(today)
+        setShares('')
+        setCostPerShares('')
+        setNotes('')
+    }
+
+    const handelUpdateRecordSubmit = (e) => {
+        e.preventDefault()
+        let record = {
+            symbol: symbol,
+            trade_date: tradeDate,
+            shares: shares,
+            cost_per_share: costPerShares,
+            notes: notes
+        }
+        console.log({ id: selectedRecord, record: record })
+        dispatch(updatePortfolioRecord({ id: selectedRecord, record: record }))
+        setUpdateModalShow(false)
         setSymbol('')
         setTradeDate(today)
         setShares('')
@@ -58,11 +88,6 @@ export default function PortfolioDetailsScreen({ location, history, match }) {
     const handelDeleteRecord = (e) => {
         e.preventDefault()
         dispatch(deletePortfolioRecord(e.target.value))
-    }
-
-    const handelUpdateRecord = (e) => {
-        e.preventDefault()
-        console.log("update")
     }
 
     const handelSearchSymbols = (e) => {
@@ -81,9 +106,7 @@ export default function PortfolioDetailsScreen({ location, history, match }) {
                 (
                     <>
                         <ModalForm
-                            show={modalShow}
-                            onSubmit={handelCreateRecordSubmit}
-                            onClose={() => setModalShow(false)}
+                            show={createModalShow}
                             title="Create New Record"
                             body={
                                 (
@@ -127,6 +150,7 @@ export default function PortfolioDetailsScreen({ location, history, match }) {
                                             <Form.Label>Shares</Form.Label>
                                             <Form.Control
                                                 type="number"
+                                                step="any"
                                                 placeholder="Shares"
                                                 value={shares}
                                                 onChange={(e) => setShares(e.target.value)}
@@ -136,6 +160,7 @@ export default function PortfolioDetailsScreen({ location, history, match }) {
                                             <Form.Label>Cost Per Share</Form.Label>
                                             <Form.Control
                                                 type="number"
+                                                step="any"
                                                 placeholder="Cost Per Share"
                                                 value={costPerShares}
                                                 onChange={(e) => setCostPerShares(e.target.value)}
@@ -151,7 +176,7 @@ export default function PortfolioDetailsScreen({ location, history, match }) {
                                             />
                                         </Form.Group>
                                         <Form.Group className="pt-3 text-right border-top">
-                                            <Button onClick={() => setModalShow(false)} variant="secondary">
+                                            <Button onClick={() => setCreateModalShow(false)} variant="secondary">
                                                 Close
                                             </Button>
                                             <Button variant="primary" type="submit">
@@ -164,7 +189,7 @@ export default function PortfolioDetailsScreen({ location, history, match }) {
                         />
                         <Row>
                             <Col className="d-flex justify-content-between">
-                                <Button onClick={() => setModalShow(true)} variant="info" size="sm" className="my-3 d-flex align-items-center text-center">
+                                <Button onClick={() => setCreateModalShow(true)} variant="info" size="sm" className="my-3 d-flex align-items-center text-center">
                                     Create New Record
                                 </Button>
                             </Col>
@@ -190,7 +215,7 @@ export default function PortfolioDetailsScreen({ location, history, match }) {
                                             <tr key={record.id}>
                                                 <td>
                                                     <Link to={`/stock/${record.symbol}/?prev=${path}`}>{record.symbol}</Link>
-                                                    <div><small><ColoredCodecNumber value={record.symbol_price} /></small></div>
+                                                    <div><small>Price: {record.symbol_price}</small></div>
                                                     <div><small>Traded on: {record.trade_date}</small></div>
                                                 </td>
                                                 <td>
@@ -204,15 +229,95 @@ export default function PortfolioDetailsScreen({ location, history, match }) {
                                                     <ColoredCodecNumber value={record.gain_value} />
                                                     <div><small><ColoredCodecNumber value={record.gain_percent} prefix="%" /></small></div>
                                                 </td>
-                                                <td><ColoredCodecNumber value={record.market_value} /></td>
+                                                <td><ColoredCodecNumber value={record.total_gain} /></td>
                                                 <td>{record.notes}</td>
                                                 <td>
+                                                    <ModalForm
+                                                        show={updateModalShow}
+                                                        onClose={() => setUpdateModalShow(false)}
+                                                        title="Update Record"
+                                                        body={
+                                                            (
+                                                                <Form onSubmit={handelUpdateRecordSubmit}>
+                                                                    <Form.Group className="mb-3">
+                                                                        <Form.Label>Stock Symbol</Form.Label>
+                                                                        <Form.Control
+                                                                            type="text"
+                                                                            value={symbol}
+                                                                            placeholder="Search Stock Symbol / Name"
+                                                                            ref={symbolInputRef}
+                                                                            onChange={(e) => e.preventDefault()}
+                                                                        />
+                                                                    </Form.Group>
+                                                                    <Form.Group className="mb-3">
+                                                                        <Form.Label>Trading Date</Form.Label>
+                                                                        <DatePicker
+                                                                            selected={tradeDate}
+                                                                            onChange={(e) => {
+                                                                                setTradeDate(e);
+                                                                            }}
+                                                                            className="form-control"
+                                                                            maxDate={today}
+                                                                        />
+                                                                    </Form.Group>
+                                                                    <Form.Group className="mb-3">
+                                                                        <Form.Label>Shares</Form.Label>
+                                                                        <Form.Control
+                                                                            type="number"
+                                                                            step="any"
+                                                                            placeholder="Shares"
+                                                                            value={shares}
+                                                                            onChange={(e) => setShares(e.target.value)}
+                                                                        />
+                                                                    </Form.Group>
+                                                                    <Form.Group className="mb-3">
+                                                                        <Form.Label>Cost Per Share</Form.Label>
+                                                                        <Form.Control
+                                                                            type="number"
+                                                                            step="any"
+                                                                            placeholder="Cost Per Share"
+                                                                            value={costPerShares}
+                                                                            onChange={(e) => setCostPerShares(e.target.value)}
+                                                                        />
+                                                                    </Form.Group>
+                                                                    <Form.Group className="mb-3">
+                                                                        <Form.Label>Notes</Form.Label>
+                                                                        <Form.Control
+                                                                            type="text"
+                                                                            placeholder="Notes"
+                                                                            value={notes}
+                                                                            onChange={(e) => setNotes(e.target.value)}
+                                                                        />
+                                                                    </Form.Group>
+                                                                    <Form.Group className="pt-3 text-right border-top">
+                                                                        <Button onClick={() => {
+                                                                            setSelectedRecord("")
+                                                                            setUpdateModalShow(false)
+                                                                        }} variant="secondary">
+                                                                            Close
+                                                                        </Button>
+                                                                        <Button variant="primary" type="submit">
+                                                                            Submit
+                                                                        </Button>
+                                                                    </Form.Group>
+                                                                </Form>
+                                                            )
+                                                        }
+                                                    />
                                                     <Button
                                                         variant="info"
                                                         value={record.id}
-                                                        onClick={handelUpdateRecord}
+                                                        onClick={() => {
+                                                            setSelectedRecord(record.id)
+                                                            setSymbol(record.symbol)
+                                                            setTradeDate(new Date(record.trade_date))
+                                                            setShares(record.shares)
+                                                            setCostPerShares(record.cost_per_share)
+                                                            setNotes(record.notes)
+                                                            setUpdateModalShow(true)
+                                                        }}
                                                         size="sm"
-                                                        className="my-3">
+                                                        className="my-3 mr-3">
                                                         Update
                                                     </Button>
                                                     <Button

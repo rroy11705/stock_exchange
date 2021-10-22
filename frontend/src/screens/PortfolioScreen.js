@@ -6,7 +6,7 @@ import Loader from '../components/Loader'
 import ColoredCodecNumber from '../components/ColoredCodecNumber'
 import Message from '../components/Message'
 import ModalForm from '../components/ModalForm'
-import { createPortfolio, getPortfolio, deletePortfolio } from '../actions/portfolioAction'
+import { createPortfolio, getPortfolio, deletePortfolio, updatePortfolioDetails } from '../actions/portfolioAction'
 import { useHistory } from 'react-router-dom'
 
 export default function PortfolioScreen() {
@@ -14,14 +14,22 @@ export default function PortfolioScreen() {
     let history = useHistory()
     const path = history.location.search ? history.location.pathname + history.location.search : history.location.pathname
 
-    const [modalShow, setModalShow] = useState(false);
+    const [createModalShow, setCreateModalShow] = useState(false);
+    const [updateModalShow, setUpdateModalShow] = useState(false);
     const [portfolioName, setPortfolioName] = useState('')
+    const [selectedPortfolio, setSelectedPortfolio] = useState('')
+
+    const userLogin = useSelector(state => state.userLogin)
+    const { userInfo } = userLogin
 
     const dispatch = useDispatch()
     const portfolioList = useSelector(state => state.portfolioList)
     const { error, loading, portfolios } = portfolioList
     
     useEffect(() => {
+        if (!userInfo) {
+            history.push('/login')
+        }
         dispatch(getPortfolio())
     }, [])
 
@@ -29,7 +37,7 @@ export default function PortfolioScreen() {
         e.preventDefault()
         dispatch(createPortfolio({ 'name': portfolioName}))
         setPortfolioName('')
-        setModalShow(false)
+        setCreateModalShow(false)
     }
 
     const handelDeletePortfolio = (e) => {
@@ -38,9 +46,11 @@ export default function PortfolioScreen() {
         dispatch(deletePortfolio(portfolio_id))
     }
 
-    const handelUpdatePortfolio  = (e) => {
+    const handelUpdatePortfolioSubmit  = (e) => {
         e.preventDefault()
-        console.log("update")
+        dispatch(updatePortfolioDetails({ id: selectedPortfolio, portfolio: { 'name': portfolioName }}))
+        setPortfolioName('')
+        setUpdateModalShow(false)
     }
 
     if(loading) 
@@ -51,37 +61,37 @@ export default function PortfolioScreen() {
                 :
                 (
                     <>
-                    <ModalForm
-                        show={modalShow}
-                        title="Create New Portfolio"
-                        body={
-                            (
-                                <Form onSubmit={handelCreatePortfolioSubmit}>
-                                    <Form.Group className="mb-3" controlId="formBasicEmail">
-                                        <Form.Label>Portfolio Name</Form.Label>
-                                        <Form.Control 
-                                            type="name" 
-                                            placeholder="Enter Portfolio Name" 
-                                            value={portfolioName}
-                                            onChange={(e) => setPortfolioName(e.target.value)}
-                                        />
-                                    </Form.Group>
-                                    <Form.Group className="pt-3 text-right border-top" controlId="formBasicEmail">
-                                        <Button onClick={() => setModalShow(false)} variant="secondary">
-                                            Close
-                                        </Button>
-                                        <Button variant="primary" type="submit">
-                                            Submit
-                                        </Button>
-                                    </Form.Group>
-                                </Form>
-                            )
-                        }
-                    />
+                        <ModalForm
+                            show={createModalShow}
+                            title="Create New Portfolio"
+                            body={
+                                (
+                                    <Form onSubmit={handelCreatePortfolioSubmit}>
+                                        <Form.Group className="mb-3" controlId="formBasicEmail">
+                                            <Form.Label>Portfolio Name</Form.Label>
+                                            <Form.Control 
+                                                type="name" 
+                                                placeholder="Enter Portfolio Name" 
+                                                value={portfolioName}
+                                                onChange={(e) => setPortfolioName(e.target.value)}
+                                            />
+                                        </Form.Group>
+                                        <Form.Group className="pt-3 text-right border-top" controlId="formBasicEmail">
+                                            <Button onClick={() => setCreateModalShow(false)} variant="secondary">
+                                                Close
+                                            </Button>
+                                            <Button variant="primary" type="submit">
+                                                Submit
+                                            </Button>
+                                        </Form.Group>
+                                    </Form>
+                                )
+                            }
+                        />
                     <Row>
                         <Col className="d-flex justify-content-between">
                             <Button 
-                                onClick={() => setModalShow(true)} 
+                                onClick={() => setCreateModalShow(true)} 
                                 variant="info" 
                                 size="sm" 
                                 className="my-3 d-flex align-items-center text-center">
@@ -119,12 +129,43 @@ export default function PortfolioScreen() {
                                                     <td><ColoredCodecNumber value={portfolio.total_change} /></td>
                                                     <td><ColoredCodecNumber value={portfolio.total_change_percent} prefix="%" /></td>
                                                     <td>
+                                                        <ModalForm
+                                                            show={updateModalShow}
+                                                            title="Update Portfolio"
+                                                            body={
+                                                                (
+                                                                    <Form onSubmit={handelUpdatePortfolioSubmit}>
+                                                                        <Form.Group className="mb-3" controlId="formBasicEmail">
+                                                                            <Form.Label>Portfolio Name</Form.Label>
+                                                                            <Form.Control
+                                                                                type="name"
+                                                                                placeholder="Enter Portfolio Name"
+                                                                                value={portfolioName}
+                                                                                onChange={(e) => setPortfolioName(e.target.value)}
+                                                                            />
+                                                                        </Form.Group>
+                                                                        <Form.Group className="pt-3 text-right border-top" controlId="formBasicEmail">
+                                                                            <Button onClick={() => { setUpdateModalShow(false);}} variant="secondary">
+                                                                                Close
+                                                                            </Button>
+                                                                            <Button variant="primary" type="submit">
+                                                                                Submit
+                                                                            </Button>
+                                                                        </Form.Group>
+                                                                    </Form>
+                                                                )
+                                                            }
+                                                        />
                                                         <Button
                                                             variant="info"
                                                             value={portfolio.id}
-                                                            onClick={handelUpdatePortfolio}
+                                                            onClick={() => { 
+                                                                setSelectedPortfolio(portfolio.id); 
+                                                                setPortfolioName(portfolio.name); 
+                                                                setUpdateModalShow(true); 
+                                                            }}
                                                             size="sm"
-                                                            className="my-3">
+                                                            className="my-3 mr-3">
                                                             Update
                                                         </Button>
                                                         <Button

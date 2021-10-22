@@ -23,6 +23,10 @@ PORTFOLIO_RECORD_DELETE_REQUEST,
 PORTFOLIO_RECORD_DELETE_SUCCESS,
 PORTFOLIO_RECORD_DELETE_FAIL,
 
+PORTFOLIO_DETAILS_UPDATE_REQUEST,
+PORTFOLIO_DETAILS_UPDATE_SUCCESS,
+PORTFOLIO_DETAILS_UPDATE_FAIL,
+
 PORTFOLIO_RECORD_UPDATE_REQUEST,
 PORTFOLIO_RECORD_UPDATE_SUCCESS,
 PORTFOLIO_RECORD_UPDATE_FAIL
@@ -64,6 +68,29 @@ export const portfolioReducer = (state = { loading: true, portfolios: [] }, acti
             }
 
         case PORTFOLIO_CREATE_FAIL:
+            return {
+                loading: false,
+                error: action.payload
+            }
+
+        case PORTFOLIO_DETAILS_UPDATE_REQUEST:
+            return {
+                ...state,
+                loading: true
+            }
+        
+        case PORTFOLIO_DETAILS_UPDATE_SUCCESS:
+            const index = state.portfolios.findIndex(x => x.id === action.payload.id)
+            state.portfolios[index].name = action.payload.name
+            state.portfolios[index].updatedAt = action.payload.updatedAt
+            return {
+                ...state,
+                loading: false,
+                portfolios: state.portfolios,
+                success: true
+            }
+
+        case PORTFOLIO_DETAILS_UPDATE_FAIL:
             return {
                 loading: false,
                 error: action.payload
@@ -129,6 +156,28 @@ export const portfolioDetailsReducer = (state = { loading: true, portfolio: { re
             }
 
         case PORTFOLIO_RECORD_CREATE_FAIL:
+            return {
+                loading: false,
+                error: action.payload
+            }
+
+        case PORTFOLIO_RECORD_UPDATE_REQUEST:
+            return {
+                ...state,
+                loading: true
+            }
+
+        case PORTFOLIO_RECORD_UPDATE_SUCCESS:
+            const index = state.portfolio.records.findIndex(x => x.id === action.payload.id)
+            state.portfolio.records[index] = action.payload
+            return {
+                ...state,
+                loading: false,
+                portfolio: state.portfolio,
+                success: true
+            }
+
+        case PORTFOLIO_RECORD_UPDATE_FAIL:
             return {
                 loading: false,
                 error: action.payload

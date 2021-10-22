@@ -102,8 +102,7 @@ class PortfolioRecordsSerializer(serializers.ModelSerializer):
 
     def get_total_gain(self, obj):
         shares = obj.shares if obj.shares else 0
-        cost_per_share = obj.cost_per_share if obj.cost_per_share else obj.symbol.prev_close_value
-        total_gain = (obj.symbol.price - cost_per_share) * shares
+        total_gain = (obj.symbol.price - obj.cost_per_share) * shares
         return round(total_gain, 2)
 
 

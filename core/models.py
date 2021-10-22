@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from datetime import date
 
 
 class LiveStocks(models.Model):
@@ -41,10 +42,15 @@ class Portfolio(models.Model):
 class PortfolioRecords(models.Model):
     portfolio = models.ForeignKey(Portfolio, on_delete=models.SET_NULL, null=True, blank=True)
     symbol = models.ForeignKey(LiveStocks, on_delete=models.SET_NULL, null=True, blank=True)
-    trade_date = models.DateField(auto_now_add=True)
+    trade_date = models.DateField(default=date.today)
     shares = models.FloatField(max_length=50, null=True, blank=True)
     cost_per_share = models.FloatField(max_length=50, null=True, blank=True)
     notes = models.TextField(blank=True, null=True)
+    createdAt = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updatedAt = models.DateTimeField(auto_now=True, null=True, blank=True)
+
+    class Meta:
+        verbose_name_plural = 'Portfolio Records'
 
     def __str__(self):
         return f"{self.symbol} - {self.portfolio}"

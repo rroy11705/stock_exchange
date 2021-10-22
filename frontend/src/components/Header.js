@@ -29,23 +29,30 @@ export default function Header() {
                         <SearchBox />
                         <Nav className="ml-auto">
 
-                            <LinkContainer to='/portfolios'>
-                                <Nav.Link >My Portfolio</Nav.Link>
-                            </LinkContainer>
 
                             {userInfo ? (
-                                <NavDropdown title={userInfo.name} id='username'>
-                                    <LinkContainer to='/profile'>
-                                        <NavDropdown.Item>Profile</NavDropdown.Item>
+                                <>
+                                    <LinkContainer to='/portfolios'>
+                                        <Nav.Link >My Portfolio</Nav.Link>
                                     </LinkContainer>
+                                    <NavDropdown title={userInfo.name} id='username'>
+                                        <LinkContainer to='/profile'>
+                                            <NavDropdown.Item>Profile</NavDropdown.Item>
+                                        </LinkContainer>
 
-                                    <NavDropdown.Item onClick={logoutHandler}>Logout</NavDropdown.Item>
+                                        <NavDropdown.Item onClick={logoutHandler}>Logout</NavDropdown.Item>
 
-                                </NavDropdown>
+                                    </NavDropdown>
+                                </>
                             ) : (
+                                <>
                                 <LinkContainer to='/login'>
-                                    <Nav.Link><i className="fas fa-user"></i>Login</Nav.Link>
+                                    <Nav.Link>Login</Nav.Link>
                                 </LinkContainer>
+                                <LinkContainer to='/register'>
+                                    <Nav.Link>Register</Nav.Link>
+                                </LinkContainer>
+                                </>
                             )}
 
 
