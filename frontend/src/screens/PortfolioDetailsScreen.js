@@ -228,7 +228,10 @@ export default function PortfolioDetailsScreen({ location, history, match }) {
                                                     <ColoredCodecNumber value={record.gain_value} />
                                                     <div><small><ColoredCodecNumber value={record.gain_percent} prefix="%" /></small></div>
                                                 </td>
-                                                <td><ColoredCodecNumber value={record.total_gain} /></td>
+                                                <td>
+                                                    <ColoredCodecNumber value={record.total_gain} />
+                                                    <div><small><ColoredCodecNumber value={record.total_gain_percent} prefix="%" /></small></div>
+                                                </td>
                                                 <td>{record.notes}</td>
                                                 <td>
                                                     <ModalForm

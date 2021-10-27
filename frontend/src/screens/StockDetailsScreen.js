@@ -70,7 +70,7 @@ export default function StockDetailsScreen({ location, match }) {
                                                 (
                                                     <>
                                                         <div className="d-grid gap-2">
-                                                            {portfolios.map(portfolio => (
+                                                            {portfolios.length ? portfolios.map(portfolio => (
                                                                 <div key={portfolio.id}>
                                                                     <Button
                                                                         variant="link"
@@ -80,7 +80,9 @@ export default function StockDetailsScreen({ location, match }) {
                                                                         {portfolio.name}
                                                                     </Button>
                                                                 </div>
-                                                            ))}
+                                                            ))
+                                                            :
+                                                            <div>No Portfolio found, please create one</div>}
                                                         </div>
                                                         <Button className="mt-3 float-right" onClick={() => setAddModalShow(false)} variant="secondary">
                                                             Close

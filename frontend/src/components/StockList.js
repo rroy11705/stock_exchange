@@ -37,13 +37,13 @@ export default function StockList({ title, seeMoreLink, showAddToPortfolioButton
 
     useEffect(() => {
         dispatch(getPortfolio())
-        if (showAddToPortfolioButton && selectedStocks.length === 0) {
+        if (userInfo && showAddToPortfolioButton && selectedStocks.length === 0) {
             addToPortfolioButton.current.disabled = true
         }
-        if (showAddToPortfolioButton && selectedStocks.length > 0) {
+        if (userInfo && showAddToPortfolioButton && selectedStocks.length > 0) {
             addToPortfolioButton.current.disabled = false
         }
-    }, [dispatch, showAddToPortfolioButton, selectedStocks])
+    }, [dispatch, userInfo, showAddToPortfolioButton, selectedStocks])
 
     const handleStockCheckboxClick = (e) => {
         let stockSymbol = e.target.value

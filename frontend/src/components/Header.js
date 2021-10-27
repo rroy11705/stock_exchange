@@ -54,24 +54,6 @@ export default function Header() {
                                 </LinkContainer>
                                 </>
                             )}
-
-
-                            {userInfo && userInfo.isAdmin && (
-                                <NavDropdown title='Admin' id='admin-menu'>
-                                    <LinkContainer to='/admin/user-list'>
-                                        <NavDropdown.Item>Users</NavDropdown.Item>
-                                    </LinkContainer>
-
-                                    <LinkContainer to='/admin/portfolio-list'>
-                                        <NavDropdown.Item>Portfolio List</NavDropdown.Item>
-                                    </LinkContainer>
-
-                                    <LinkContainer to='/admin/wishlist-list'>
-                                        <NavDropdown.Item>Wishlist List</NavDropdown.Item>
-                                    </LinkContainer>
-
-                                </NavDropdown>
-                            )}
                         </Nav>
                     </Navbar.Collapse>
                 </Container>

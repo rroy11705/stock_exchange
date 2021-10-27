@@ -70,10 +70,11 @@ class PortfolioRecordsSerializer(serializers.ModelSerializer):
     gain_value = serializers.SerializerMethodField(read_only=True)
     gain_percent = serializers.SerializerMethodField(read_only=True)
     total_gain = serializers.SerializerMethodField(read_only=True)
+    total_gain_percent = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = PortfolioRecords
-        fields = ['id', 'symbol', 'trade_date', 'shares', 'cost_per_share', 'symbol_price', 'market_value', 'change_value', 'change_percent', 'gain_value', 'gain_percent', 'total_gain', 'notes']
+        fields = ['id', 'symbol', 'trade_date', 'shares', 'cost_per_share', 'symbol_price', 'market_value', 'change_value', 'change_percent', 'gain_value', 'gain_percent', 'total_gain', 'total_gain_percent', 'notes']
 
     def get_symbol_price(self, obj):
         return round(obj.symbol.price, 2)
@@ -84,8 +85,7 @@ class PortfolioRecordsSerializer(serializers.ModelSerializer):
         return round(market_value, 2)
 
     def get_change_value(self, obj):
-        change_value = obj.symbol.change_amount
-        return round(change_value, 2)
+        return round(obj.symbol.change_amount, 2)
 
     def get_change_percent(self, obj):
         change_percent = (obj.symbol.change_amount * 100 / obj.symbol.prev_close_value)
@@ -104,6 +104,10 @@ class PortfolioRecordsSerializer(serializers.ModelSerializer):
         shares = obj.shares if obj.shares else 0
         total_gain = (obj.symbol.price - obj.cost_per_share) * shares
         return round(total_gain, 2)
+
+    def get_total_gain_percent(self, obj):
+        total_gain_percent = (obj.symbol.price - obj.cost_per_share) / obj.cost_per_share
+        return round(total_gain_percent, 2)
 
 
 class PortfolioSerializer(serializers.ModelSerializer):
