@@ -66,7 +66,7 @@ def saveData(stock):
 @retry(stop=stop_after_attempt(3))
 def getMostActiveSocks(offset, count):
 
-    url = f'https://query1.finance.yahoo.com/v1/finance/screener/public/saved?start={offset}&count={count}&scrId=92850596-8041-4eee-b190-cf85c7713f5e'
+    url = f'https://query1.finance.yahoo.com/v1/finance/screener/public/saved?start={offset}&count={count}&scrId=0b266352-5bec-4a8c-affa-e6ed8455e2a4'
     res = requests.get(url, headers=headers, timeout=5).json()
 
     stocks = res["finance"]["result"][0]["quotes"]
