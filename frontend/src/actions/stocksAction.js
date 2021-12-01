@@ -64,7 +64,7 @@ export const listStocksTopGainers = (keyword = '') => async (dispatch) => {
     try {
         dispatch({ type: STOCKS_TOP_GAINER_REQUEST })
 
-        const { data } = await axios.get(`/api/stocks/top-gainers/${keyword}`)
+        const { data } = await axios.get(`/api/stocks/top/gainers/${keyword}`)
 
         dispatch({
             type: STOCKS_TOP_GAINER_SUCCESS,
@@ -85,7 +85,7 @@ export const listStocksTopLosers = (keyword = '') => async (dispatch) => {
     try {
         dispatch({ type: STOCKS_TOP_LOSER_REQUEST })
 
-        const { data } = await axios.get(`/api/stocks/top-losers/${keyword}`)
+        const { data } = await axios.get(`/api/stocks/top/losers/${keyword}`)
 
         dispatch({
             type: STOCKS_TOP_LOSER_SUCCESS,
